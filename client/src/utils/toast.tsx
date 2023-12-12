@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 
 interface ToastOptions {
-  type: "success" | "error";
+  type: "info" | "success" | "warning" | "error";
   title: string;
   text: string;
 }
