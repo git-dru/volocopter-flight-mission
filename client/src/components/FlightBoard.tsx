@@ -1,5 +1,12 @@
 import { useMemo, useState } from "react";
-import { Column, Id, Flight, FlightState } from "../types";
+import {
+  Column,
+  Id,
+  Flight,
+  FlightState,
+  CreateFlight,
+  ApiError,
+} from "../types";
 
 import {
   DndContext,
@@ -16,6 +23,9 @@ import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import ColumnContainer from "./ColumnContainer";
 import FlightCard from "./FlightCard";
+import AddFlightModal from "./AddFlightModal";
+import toast from "../utils/toast";
+import api from "../api";
 
 const defaultCols: Column[] = [
   {
@@ -34,24 +44,25 @@ const defaultCols: Column[] = [
 
 const defaultFlights: Flight[] = [
   {
-    id: "1",
+    id: 1,
     state: FlightState.PRE_FLIGHT,
     title: "pre_flight title",
     description: "pre_flight description",
   },
   {
-    id: "2",a
+    id: 2,
     state: FlightState.FLIGHT,
     title: "flight title",
     description: "flight description",
   },
   {
-    id: "3",
+    id: 3,
     state: FlightState.POST_FLIGHT,
     title: "prost_flight title",
     description: "post_flight description",
   },
 ];
+
 function FlightBoard() {
   const [columns, setColumns] = useState<Column[]>(defaultCols);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
@@ -62,6 +73,8 @@ function FlightBoard() {
 
   const [activeFlight, setActiveFlight] = useState<Flight | null>(null);
 
+  const [isOpenCreateModal, setIsOpenCreateModal] = useState<boolean>(false);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -69,6 +82,34 @@ function FlightBoard() {
       },
     })
   );
+
+  const createHandler = (inputFields: CreateFlight): Promise<boolean> => {
+    return api
+      .post<any>(`/flight`, {
+        state: "Flight",
+        ...inputFields,
+      })
+      .then((response: any) => {
+        createFlight();
+
+        toast({
+          type: "success",
+          title: "Successfully created mission",
+          text: "New mission is added to pre-flight",
+        });
+
+        return true;
+      })
+      .catch((err: ApiError) => {
+        toast({
+          type: "error",
+          title: err.name,
+          text: err.message,
+        });
+
+        return false;
+      });
+  };
 
   return (
     <div
@@ -88,11 +129,18 @@ function FlightBoard() {
         <div className="text-lg font-bold">Flight Mission Control Tool</div>
         <button
           className="bg-columnBackgroundColor font-bold text-sm rounded-md p-2"
-          onClick={() => {}}
+          onClick={() => setIsOpenCreateModal(true)}
         >
           ADD MISSION
         </button>
       </div>
+
+      <AddFlightModal
+        isOpen={isOpenCreateModal}
+        closeModal={() => setIsOpenCreateModal(false)}
+        handleSubmit={createHandler}
+      />
+
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}
