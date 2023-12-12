@@ -1,15 +1,10 @@
-from fastapi import APIRouter, FastAPI
+# main.py
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-
-api_router = APIRouter(prefix="/api")
-
-
-@api_router.get("/health", include_in_schema=False)
-def healthcheck():
-    """Check if API is up and running."""
-    return {"status": "ok"}
-
+from . import models
+from .database import engine
+from .router import router as flight_router  # import the router
 
 app = FastAPI(
     title="volocopter_code_challenge",
@@ -24,4 +19,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(api_router)
+models.Base.metadata.create_all(bind=engine)
+
+app.include_router(flight_router, prefix="/flight")  # include the router in the application
