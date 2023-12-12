@@ -1,11 +1,12 @@
+import { useState } from "react";
+import axios from "axios";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useState } from "react";
-import api from '../api';
 import Modal from "./Modal";
 import toast from "../utils/toast";
 import TrashIcon from "../icons/TrashIcon";
 import { Id, Flight, ApiError } from "../types";
+import { BASE_URL } from "../config";
 
 interface Props {
   flight: Flight;
@@ -39,7 +40,7 @@ function FlightCard({ flight, deleteFlight, color }: Props) {
   };
 
   const handleDelete = () => {
-    api.delete(`flight/${deleteId}`).then(() => {
+    axios.delete(`${BASE_URL}/flight/${deleteId}`).then(() => {
       toast({
         type: "success",
         title: "Successfully deleted mission",
