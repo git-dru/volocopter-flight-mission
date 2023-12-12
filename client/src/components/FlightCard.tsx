@@ -80,6 +80,7 @@ function FlightCard({ flight, deleteFlight, color }: Props) {
         {...attributes}
         {...listeners}
         className={`rounded-md bg-white border ${color} p-3 border-l-[6px]`}
+        data-testid="flight-card"
       >
         <div className="flex justify-between items-center pb-2 border-b">
           <p className="my-auto w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap text-sm font-bold">
