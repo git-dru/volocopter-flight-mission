@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import './App.css';
 
 export const App = () => {
 	const [apiStatus, setApiStatus] = useState<string | null>(null);
