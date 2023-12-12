@@ -49,6 +49,7 @@ function Modal({
           <XMarkIcon
             className="h-6 w-6 mx-1 stroke-black-400 cursor-pointer"
             onClick={onClose}
+            data-testid="close-button"
           />
         </div>
         <div className="py-2">{children}</div>
@@ -64,6 +65,7 @@ function Modal({
             type="button"
             className="px-4 py-2 text-sm font-medium text-white bg-slate-600 border border-gray-200 rounded-e-lg hover:bg-slate-500 hover:text-blue-500"
             onClick={onConfirm}
+            data-testid="submit-button"
           >
             {confirmText}
           </button>
