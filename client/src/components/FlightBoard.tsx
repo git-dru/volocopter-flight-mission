@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import axios from "axios";
 import {
   Column,
   Id,
@@ -25,7 +26,7 @@ import ColumnContainer from "./ColumnContainer";
 import FlightCard from "./FlightCard";
 import AddFlightModal from "./AddFlightModal";
 import toast from "../utils/toast";
-import api from "../api";
+import { BASE_URL } from "../config";
 
 const defaultCols: Column[] = [
   {
@@ -42,32 +43,11 @@ const defaultCols: Column[] = [
   },
 ];
 
-const defaultFlights: Flight[] = [
-  {
-    id: 1,
-    state: FlightState.PRE_FLIGHT,
-    title: "pre_flight title",
-    description: "pre_flight description",
-  },
-  {
-    id: 2,
-    state: FlightState.FLIGHT,
-    title: "flight title",
-    description: "flight description",
-  },
-  {
-    id: 3,
-    state: FlightState.POST_FLIGHT,
-    title: "prost_flight title",
-    description: "post_flight description",
-  },
-];
-
 function FlightBoard() {
   const [columns, setColumns] = useState<Column[]>(defaultCols);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
-  const [flights, setFlights] = useState<Flight[]>(defaultFlights);
+  const [flights, setFlights] = useState<Flight[]>([]);
 
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
 
@@ -84,13 +64,10 @@ function FlightBoard() {
   );
 
   const createHandler = (inputFields: CreateFlight): Promise<boolean> => {
-    return api
-      .post<any>(`/flight`, {
-        state: "Flight",
-        ...inputFields,
-      })
+    return axios
+      .post<any>(`${BASE_URL}/flight/`, inputFields)
       .then((response: any) => {
-        createFlight();
+        createFlight(response.data);
 
         toast({
           type: "success",
@@ -98,6 +75,7 @@ function FlightBoard() {
           text: "New mission is added to pre-flight",
         });
 
+        setIsOpenCreateModal(false);
         return true;
       })
       .catch((err: ApiError) => {
@@ -110,6 +88,22 @@ function FlightBoard() {
         return false;
       });
   };
+
+  useEffect(() => {
+    axios.get(`${BASE_URL}/flight/all/`).then((res: {
+      data: Flight[];
+      status: number;
+    }) => {
+      setFlights(res.data)
+    })
+      .catch((err: ApiError) => {
+        toast({
+          type: "error",
+          title: err.name,
+          text: err.message,
+        });
+      });
+  }, [])
 
   return (
     <div
@@ -153,7 +147,6 @@ function FlightBoard() {
               <ColumnContainer
                 key={col.id}
                 column={col}
-                createFlight={createFlight}
                 deleteFlight={deleteFlight}
                 flights={flights.filter((flight) => flight.state === col.id)}
               />
@@ -166,7 +159,6 @@ function FlightBoard() {
             {activeColumn && (
               <ColumnContainer
                 column={activeColumn}
-                createFlight={createFlight}
                 deleteFlight={deleteFlight}
                 flights={flights.filter(
                   (flight) => flight.state === activeColumn.id
@@ -187,14 +179,7 @@ function FlightBoard() {
     </div>
   );
 
-  function createFlight() {
-    const newFlight: Flight = {
-      id: flights.length + 1,
-      state: FlightState.PRE_FLIGHT,
-      title: `new title ${flights.length + 1}`,
-      description: `new description ${flights.length + 1}`,
-    };
-
+  function createFlight(newFlight: Flight) {
     setFlights((flights) => [...flights, newFlight]);
   }
 
@@ -224,18 +209,27 @@ function FlightBoard() {
     const activeId = active.id;
     const overId = over.id;
 
-    if (activeId === overId) return;
+    const flight: { id: Id; state: string } = active.data?.current?.flight;
 
-    const isActiveAColumn = active.data.current?.type === "Column";
-    if (!isActiveAColumn) return;
+    axios
+      .patch(`${BASE_URL}/flight/${flight.id}`, flight)
+      .then(() => {
+        setColumns((columns) => {
+          const activeColumnIndex = columns.findIndex(
+            (col) => col.id === activeId
+          );
 
-    setColumns((columns) => {
-      const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
-
-      const overColumnIndex = columns.findIndex((col) => col.id === overId);
-
-      return arrayMove(columns, activeColumnIndex, overColumnIndex);
-    });
+          const overColumnIndex = columns.findIndex((col) => col.id === overId);
+          return arrayMove(columns, activeColumnIndex, overColumnIndex);
+        });
+      })
+      .catch((err: ApiError) => {
+        toast({
+          type: "error",
+          title: err.name,
+          text: err.message,
+        });
+      });
   }
 
   function onDragOver(event: DragOverEvent) {
