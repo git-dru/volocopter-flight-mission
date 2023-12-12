@@ -21,4 +21,4 @@ app.add_middleware(
 
 models.Base.metadata.create_all(bind=engine)
 
-app.include_router(flight_router, prefix="/flight")  # include the router in the application
+app.include_router(flight_router, prefix="/api/flight")
