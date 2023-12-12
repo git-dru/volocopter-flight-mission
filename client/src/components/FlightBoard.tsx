@@ -148,7 +148,7 @@ function FlightBoard() {
                 key={col.id}
                 column={col}
                 deleteFlight={deleteFlight}
-                flights={flights.filter((flight) => flight.state === col.id)}
+                flights={flights.filter((flight) => flight?.state === col.id)}
               />
             ))}
           </SortableContext>
