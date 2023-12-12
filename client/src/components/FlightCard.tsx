@@ -1,8 +1,7 @@
-import { useState } from "react";
-import TrashIcon from "../icons/TrashIcon";
-import { Id, Flight } from "../types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import TrashIcon from "../icons/TrashIcon";
+import { Id, Flight } from "../types";
 
 interface Props {
 	flight: Flight;
@@ -11,8 +10,6 @@ interface Props {
 }
 
 function FlightCard({ flight, deleteFlight, color }: Props) {
-	const [mouseIsOver, setMouseIsOver] = useState(false);
-
 	const {
 		setNodeRef,
 		attributes,
@@ -53,12 +50,6 @@ function FlightCard({ flight, deleteFlight, color }: Props) {
 			{...attributes}
 			{...listeners}
 			className={`rounded-md bg-white border ${color} p-3 border-l-[6px]`}
-			onMouseEnter={() => {
-				setMouseIsOver(true);
-			}}
-			onMouseLeave={() => {
-				setMouseIsOver(false);
-			}}
 		>
 			<div className="flex justify-between items-center pb-2 border-b">
 				<p className="my-auto w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap text-sm font-bold">
@@ -76,17 +67,6 @@ function FlightCard({ flight, deleteFlight, color }: Props) {
 			<p className="my-auto h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap pt-2 text-sm">
 				{flight.description}
 			</p>
-
-			{mouseIsOver && (
-				<button
-					onClick={() => {
-						deleteFlight(flight.id);
-					}}
-					className="stroke-white absolute right-4 top-1/2 -translate-y-1/2 bg-columnBackgroundColor p-2 rounded opacity-60 hover:opacity-100"
-				>
-					<TrashIcon />
-				</button>
-			)}
 		</div>
 	);
 }
