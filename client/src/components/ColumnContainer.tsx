@@ -6,7 +6,6 @@ import FlightCard from "./FlightCard";
 
 interface Props {
 	column: Column;
-	createFlight: (columnId: FlightState) => void;
 	deleteFlight: (id: Id) => void;
 	flights: Flight[];
 }
@@ -97,7 +96,7 @@ function ColumnContainer({
 				<div className="flex items-center gap-1">
 					{column.title}
 					<div>
-						{`(0)`}
+						{`(${flights.length})`}
 					</div>
 
 				</div>

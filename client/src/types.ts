@@ -17,3 +17,10 @@ export type Flight = {
     title: string;
     description: string;
 };
+
+export type CreateFlight = Omit<Flight, 'id'>;
+
+export type ApiError = {
+    name: string;
+    message: string;
+}

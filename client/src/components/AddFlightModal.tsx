@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Modal from "./Modal";
-import { CreateFlight } from "../types";
+import { CreateFlight, FlightState } from "../types";
 
 interface Props {
   isOpen: boolean;
@@ -10,6 +10,7 @@ interface Props {
 
 function AddFlightModal({ isOpen, closeModal, handleSubmit }: Props) {
   const [inputFields, setInputFields] = useState<CreateFlight>({
+    state: FlightState.PRE_FLIGHT,
     title: "",
     description: "",
   });
@@ -23,6 +24,7 @@ function AddFlightModal({ isOpen, closeModal, handleSubmit }: Props) {
 
     if (success) {
       setInputFields({
+        state: FlightState.PRE_FLIGHT,
         title: "",
         description: "",
       });
