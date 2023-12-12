@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import FlightBoard from "./components/FlightBoard";
 import './App.css';
 
 export const App = () => {
@@ -14,8 +15,7 @@ export const App = () => {
 
 	return (
 		<div>
-			<p>Volocopter Code Challenge</p>
-			<p>API Status: {apiStatus}</p>
+			<FlightBoard />
 		</div>
 	);
 };
