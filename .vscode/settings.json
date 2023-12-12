@@ -1,0 +1,21 @@
+{
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "always",
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+    },
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.include": [
+        "${workspaceFolder}/src",
+    ],
+    "python.languageServer": "Pylance",
+    "pylint.lintOnChange": true,
+    "pylint.path": [
+        "${workspaceFolder:python}/server/.venv/bin/pylint"
+    ],
+    "python.defaultInterpreterPath": "${workspaceFolder:python}/server/.venv/bin/python",
+}

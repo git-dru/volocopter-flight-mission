@@ -1,0 +1,11 @@
+**/*Dockerfile.*
+**/*node_modules
+**/*.eslintrc.cjs
+**/*Dockerfile*
+**/*.dockerignore
+**/*requirements-dev.txt
+**/*.venv
+**/*tsconfig.json
+**/*tsconfig.node.json
+**/*README.md
+**/*.gitignore
