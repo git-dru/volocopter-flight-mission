@@ -72,7 +72,7 @@ function FlightBoard() {
         toast({
           type: "success",
           title: "Successfully created mission",
-          text: "New mission is added to pre-flight",
+          text: `New mission is added to ${inputFields.state.toLocaleLowerCase()}`,
         });
 
         setIsOpenCreateModal(false);
